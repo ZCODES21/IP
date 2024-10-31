@@ -84,6 +84,13 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
+        button:focus {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        button:active {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(0.95);
+        }
         .spinner-container {
             position: absolute;
             top: 50%;
@@ -99,17 +106,23 @@
             height: 50px;
             animation: spin 1s linear infinite;
         }
-        .error-message {
-            color: #ff6f61;
-            margin-top: 15px;
-        }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .error-message {
+            color: #ff6f61;
+            margin-top: 15px;
+        }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -159,7 +172,8 @@
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
-                displayResults(data);
+                console.log(data);  // Debugging: Check the API response structure
+                displayResults(data.result);  // Use the "result" object
                 downloadBtn.style.display = 'block';
             } catch (error) {
                 errorMessage.textContent = `Error: ${error.message}`;
@@ -170,14 +184,26 @@
 
         function displayResults(data) {
             const summaryContainer = document.getElementById('summary');
-            const countryFlag = data.country_flag ? `<img src="${data.country_flag}" alt="Country Flag" style="max-width: 100px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">` : '';
+
+            // Use the properties from the "result" object
+            const ip = data.query || 'N/A';
+            const continentName = data.continent || 'N/A';
+            const continentCode = data.continentCode || 'N/A';
+            const countryName = data.country || 'N/A';
+            const countryCode = data.countryCode || 'N/A';
+            const regionName = data.regionName || 'N/A';
+            const city = data.city || 'N/A';
+            const isp = data.isp || 'N/A';
+            const organization = data.org || 'N/A';
 
             const summaryInfo = `
-                <p>IP: ${data.ip}</p>
-                <p>Continent: ${data.continent_name} (${data.continent_code})</p>
-                <p>Country: ${data.country_name} (${data.country_code2}, ${data.country_code3})</p>
-                <p>Official Name: ${data.country_name_official}</p>
-                ${countryFlag}
+                <p>IP: ${ip}</p>
+                <p>Continent: ${continentName} (${continentCode})</p>
+                <p>Country: ${countryName} (${countryCode})</p>
+                <p>Region: ${regionName}</p>
+                <p>City: ${city}</p>
+                <p>ISP: ${isp}</p>
+                <p>Organization: ${organization}</p>
             `;
             summaryContainer.innerHTML = summaryInfo;
         }
