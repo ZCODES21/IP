@@ -10,7 +10,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/api/iplookup/:ip', async (req, res) => {
     const ip = req.params.ip;
     try {
-        const response = await axios.get(`https://joshweb.click/iplu?ip=${ip}`);
+        const response = await axios.get(`https://deku-apis.onrender.com/iplu?ip=${ip}`);
         res.json(response.data);
     } catch (error) {
         res.status(500).json({ error: 'Unable to fetch IP information' });
